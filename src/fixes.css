@@ -1,0 +1,14 @@
+/* a11y contrast + small-screen fixes (QA pass) */
+:root { --accent: #0066cc; --ok: #1d7a35; }
+@media (prefers-color-scheme: dark) { :root { --accent: #2997ff; --ok: #30d158; } }
+.device-bar em { color: var(--ink-2); }
+.status-pill.revealed { color: #9a4a00; }
+@media (prefers-color-scheme: dark) { .status-pill.revealed { color: #ffb340; } }
+.invite { flex-wrap: wrap; justify-content: flex-end; }
+.table-wrap:focus-visible { outline-offset: -3px; }
+:root { --ok: #1a6b2f; }
+@media (prefers-color-scheme: dark) { :root { --ok: #30d158; } }
+.example-tag { color: var(--ink); }
+.btn-tinted { color: #0056a8; }
+@media (prefers-color-scheme: dark) { .btn-tinted { color: #5eb3ff; } }
+.note { color: var(--ink); }
