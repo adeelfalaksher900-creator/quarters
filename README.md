@@ -101,3 +101,5 @@ Vercel with framework `vite`, build `vite build`, output `dist`. Set `VITE_SUPAB
 ## License
 
 MIT
+
+Built together in trmi for TRMI x Lovhack 2026.
