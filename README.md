@@ -62,12 +62,19 @@ sequenceDiagram
   - rent sums and room counts are validated server-side
 - **Fairness:** computed client-side from the revealed bids. It's deterministic, so every housemate sees the same result.
 
+## Security
+
+- RLS on, no policies: the browser cannot read or write tables directly.
+- Every action is a `SECURITY DEFINER` function that checks the caller's per-seat secret and validates input server-side (rent, room names, duplicate names, bid totals).
+- Bids are never returned by the API before the reveal.
+- Global throttle on new splits; React escapes all user text; `npm audit` reports 0 vulnerabilities.
+
 ## Run locally
 
 ```bash
 npm install
 cp .env.example .env          # add your Supabase URL + publishable key
-# apply supabase/migrations/0001_accord.sql to your project (SQL editor or `supabase db push`)
+# apply supabase/migrations/0001_accord.sql then 0002_hardening.sql (SQL editor or `supabase db push`)
 npm run dev
 ```
 
@@ -78,6 +85,7 @@ npm test            # fairness algorithm: envy-freeness + rent sum on 200 random
 npx vite preview &  # then:
 PW=$(npm root -g)/playwright node e2e/flow.mjs   # 3 browsers: create → join → bid → reveal → re-bid → agree
 BASE=https://quarters-rent.vercel.app/ node e2e/flow.mjs   # same, against production
+BASE=https://quarters-rent.vercel.app/ node e2e/qa.mjs     # 44-check QA sweep: layout, axe a11y, validation, edge flows, 8-room scale
 ```
 
 ## Deploy
@@ -87,7 +95,7 @@ Vercel with framework `vite`, build `vite build`, output `dist`. Set `VITE_SUPAB
 ## Limits
 
 - Assumes quasi-linear preferences (money and rooms trade off linearly) and one person per room.
-- Identity is a per-browser secret in localStorage. Clearing it means re-joining as a new seat.
+- Identity is a per-browser secret in localStorage. Use **Open on another device** to move your seat; the key travels only in the URL fragment, which is never sent to a server.
 - Up to 8 rooms (brute-force assignment).
 
 ## License
